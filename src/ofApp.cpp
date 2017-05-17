@@ -7,6 +7,7 @@ void ofApp::setup(){
     numShaderTexs = 16;
     loadingFrame = 1;
     nextShaderTex = 0;
+    prevVideoFrame = -1;
     ofSetLogLevel(OF_LOG_VERBOSE);
     
 #ifdef TARGET_OPENGLES
@@ -21,13 +22,23 @@ void ofApp::setup(){
         shader.load("shadersGL2/shader");
     }
 #endif
+    fingerMovie.load("movies/bridge_slow.mov");
     
-    img.loadImage("img.jpg");
+    float movRatio = fingerMovie.getWidth() / fingerMovie.getHeight();
+    float screenRatio = ofGetWidth() / ofGetHeight();
+    if (movRatio > screenRatio){
+        plane.set(ofGetWidth(),
+                  (ofGetWidth() / fingerMovie.getWidth()) * fingerMovie.getHeight(),
+                  10,
+                  10);
+    } else {
+        plane.set((ofGetHeight() / fingerMovie.getHeight()) * fingerMovie.getWidth(),
+                  ofGetHeight(),
+                  10,
+                  10);
+    }
+    plane.mapTexCoords(0, 0, fingerMovie.getWidth(), fingerMovie.getHeight());
     
-    plane.set(800, 600, 10, 10);
-    plane.mapTexCoords(0, 0, img.getWidth(), img.getHeight());
-    
-    fingerMovie.load("movies/fingers.mov");
     fingerMovie.play();
     
 //    fingerMovie.nextFrame()
@@ -36,11 +47,21 @@ void ofApp::setup(){
     
 }
 
+bool ofApp::isFrameNew(){
+    return (   (prevVideoFrame == -1
+                && fingerMovie.getCurrentFrame() >= 0)
+            || (prevVideoFrame >= 0
+                && fingerMovie.getCurrentFrame() != prevVideoFrame));
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
+    //perhaps we can simply cache the current frame index before we call update
+    prevVideoFrame = fingerMovie.getCurrentFrame();
+    
     fingerMovie.update();
     
-    if (fingerMovie.isFrameNew()){
+    if (isFrameNew()){
         ofLogVerbose("VideoPerlin") <<
             "loading frame " << fingerMovie.getCurrentFrame() << " from video";
         frames[nextShaderTex] = ofTexture(fingerMovie.getTexture());
@@ -77,20 +98,20 @@ void ofApp::draw(){
     if (loadedImages && !loadedToShader){
         ofLogNotice("VideoPerlin") << "loading frames into shader";
         for(int i = 0; i < numShaderTexs; i++){
-            shader.setUniformTexture("tex" + ofToString(i), frames[i], i);
+            shader.setUniformTexture("map" + ofToString(i), frames[i], i);
         }
         ofLogNotice("VideoPerlin") << "loaded frames into shader";
         loadedToShader = true;
-    } else if (loadedImages && fingerMovie.isFrameNew()){
+    } else if (loadedImages && isFrameNew()){
         ofLogVerbose("VideoPerlin") <<
             "loading frame " << fingerMovie.getCurrentFrame() <<
             " into shader at tex" << nextShaderTex;
-        shader.setUniformTexture("tex" + ofToString(nextShaderTex), frames[nextShaderTex], nextShaderTex);
+        shader.setUniformTexture("map" + ofToString(nextShaderTex), frames[nextShaderTex], nextShaderTex);
     }
     
     shader.setUniform1i("u_currframe", nextShaderTex);
     
-    if (fingerMovie.isFrameNew()){
+    if (isFrameNew()){
         nextShaderTex = ((nextShaderTex + 1) % numShaderTexs);
     }
     
@@ -142,6 +163,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     
+    frames[0].bind();
     plane.draw();
     
     ofPopMatrix();

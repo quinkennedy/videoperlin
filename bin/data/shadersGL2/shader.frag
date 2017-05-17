@@ -1,22 +1,22 @@
 #version 120
 
 // this is how we receive the texture
-uniform sampler2DRect tex0;
-uniform sampler2DRect tex1;
-uniform sampler2DRect tex2;
-uniform sampler2DRect tex3;
-uniform sampler2DRect tex4;
-uniform sampler2DRect tex5;
-uniform sampler2DRect tex6;
-uniform sampler2DRect tex7;
-uniform sampler2DRect tex8;
-uniform sampler2DRect tex9;
-uniform sampler2DRect tex10;
-uniform sampler2DRect tex11;
-uniform sampler2DRect tex12;
-uniform sampler2DRect tex13;
-uniform sampler2DRect tex14;
-uniform sampler2DRect tex15;
+uniform sampler2DRect map0;
+uniform sampler2DRect map1;
+uniform sampler2DRect map2;
+uniform sampler2DRect map3;
+uniform sampler2DRect map4;
+uniform sampler2DRect map5;
+uniform sampler2DRect map6;
+uniform sampler2DRect map7;
+uniform sampler2DRect map8;
+uniform sampler2DRect map9;
+uniform sampler2DRect map10;
+uniform sampler2DRect map11;
+uniform sampler2DRect map12;
+uniform sampler2DRect map13;
+uniform sampler2DRect map14;
+uniform sampler2DRect map15;
 
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
@@ -135,7 +135,7 @@ float pmain(){
     vel = vec2(cos(a),sin(a));
     DF += snoise(pos+vel)*.25+.25;
 
-    float val = fract(DF);//smoothstep(.7,.75,fract(DF));
+    float val = fract(DF);//smoothstep(.5,1.,fract(DF));
     return val;
     //color = vec3( smoothstep(.7,.75,fract(DF)) );
 
@@ -160,43 +160,45 @@ float smain(){
 
 void main()
 {
+    
+    //gl_FragColor = texture2DRect(map0, texCoordVarying);
 	//I'm expecting this between 0-1
 	float val = pmain();
-	int index = int(floor(val * 16));// int(mod(floor(val * 16) + u_currframe, 16));
+	int index = int(mod(floor(val * 16) + u_currframe, 16));
 
 	vec4 frag = vec4(0);
 	if (index == 0){
-		frag = texture2DRect(tex0, texCoordVarying);
+		frag = texture2DRect(map0, texCoordVarying);
 	} else if (index == 1){
-		frag = texture2DRect(tex1, texCoordVarying);
+		frag = texture2DRect(map1, texCoordVarying);
 	} else if (index == 2){
-		frag = texture2DRect(tex2, texCoordVarying);
+		frag = texture2DRect(map2, texCoordVarying);
 	} else if (index == 3){
-		frag = texture2DRect(tex3, texCoordVarying);
+		frag = texture2DRect(map3, texCoordVarying);
 	} else if (index == 4){
-		frag = texture2DRect(tex4, texCoordVarying);
+		frag = texture2DRect(map4, texCoordVarying);
 	} else if (index == 5){
-		frag = texture2DRect(tex5, texCoordVarying);
+		frag = texture2DRect(map5, texCoordVarying);
 	} else if (index == 6){
-		frag = texture2DRect(tex6, texCoordVarying);
+		frag = texture2DRect(map6, texCoordVarying);
 	} else if (index == 7){
-		frag = texture2DRect(tex7, texCoordVarying);
+		frag = texture2DRect(map7, texCoordVarying);
 	} else if (index == 8){
-		frag = texture2DRect(tex8, texCoordVarying);
+		frag = texture2DRect(map8, texCoordVarying);
 	} else if (index == 9){
-		frag = texture2DRect(tex9, texCoordVarying);
+		frag = texture2DRect(map9, texCoordVarying);
 	} else if (index == 10){
-		frag = texture2DRect(tex10, texCoordVarying);
+		frag = texture2DRect(map10, texCoordVarying);
 	} else if (index == 11){
-		frag = texture2DRect(tex11, texCoordVarying);
+		frag = texture2DRect(map11, texCoordVarying);
 	} else if (index == 12){
-		frag = texture2DRect(tex12, texCoordVarying);
+		frag = texture2DRect(map12, texCoordVarying);
 	} else if (index == 13){
-		frag = texture2DRect(tex13, texCoordVarying);
+		frag = texture2DRect(map13, texCoordVarying);
 	} else if (index == 14){
-		frag = texture2DRect(tex14, texCoordVarying);
+		frag = texture2DRect(map14, texCoordVarying);
 	} else {
-		frag = texture2DRect(tex15, texCoordVarying);
+		frag = texture2DRect(map15, texCoordVarying);
 	}
 
 	//float c = fract(float(u_currframe) / 15.);

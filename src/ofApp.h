@@ -33,4 +33,6 @@ class ofApp : public ofBaseApp{
         int                 numShaderTexs;
         int                 loadingFrame;
         int                 nextShaderTex;
+        int                 prevVideoFrame;
+        bool                isFrameNew();
 };
