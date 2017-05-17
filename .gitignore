@@ -1,2 +1,4 @@
-bin/
+*.app
+*.mov
+*.jpg
 .DS_Store
