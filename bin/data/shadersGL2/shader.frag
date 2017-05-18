@@ -143,7 +143,7 @@ float pmain(){
 }
 
 float smain(){
-	vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    vec2 st = gl_FragCoord.xy/u_resolution.xy;
     st.x *= u_resolution.x/u_resolution.y;
 
     vec3 color = vec3(0.0);
@@ -162,46 +162,63 @@ void main()
 {
     
     //gl_FragColor = texture2DRect(map0, texCoordVarying);
-	//I'm expecting this between 0-1
-	float val = pmain();
-	int index = int(mod(floor(val * 16) + u_currframe, 16));
+    //I'm expecting this between 0-1
+    float val = pmain() * 16;
+    int index = int(mod(floor(val) + u_currframe, 16));
 
-	vec4 frag = vec4(0);
-	if (index == 0){
-		frag = texture2DRect(map0, texCoordVarying);
-	} else if (index == 1){
-		frag = texture2DRect(map1, texCoordVarying);
-	} else if (index == 2){
-		frag = texture2DRect(map2, texCoordVarying);
-	} else if (index == 3){
-		frag = texture2DRect(map3, texCoordVarying);
-	} else if (index == 4){
-		frag = texture2DRect(map4, texCoordVarying);
-	} else if (index == 5){
-		frag = texture2DRect(map5, texCoordVarying);
-	} else if (index == 6){
-		frag = texture2DRect(map6, texCoordVarying);
-	} else if (index == 7){
-		frag = texture2DRect(map7, texCoordVarying);
-	} else if (index == 8){
-		frag = texture2DRect(map8, texCoordVarying);
-	} else if (index == 9){
-		frag = texture2DRect(map9, texCoordVarying);
-	} else if (index == 10){
-		frag = texture2DRect(map10, texCoordVarying);
-	} else if (index == 11){
-		frag = texture2DRect(map11, texCoordVarying);
-	} else if (index == 12){
-		frag = texture2DRect(map12, texCoordVarying);
-	} else if (index == 13){
-		frag = texture2DRect(map13, texCoordVarying);
-	} else if (index == 14){
-		frag = texture2DRect(map14, texCoordVarying);
-	} else {
-		frag = texture2DRect(map15, texCoordVarying);
-	}
+    vec4 fragA = vec4(0);
+    vec4 fragB = vec4(0);
+    if (index == 0){
+        fragA = texture2DRect(map0, texCoordVarying);
+        fragB = texture2DRect(map1, texCoordVarying);
+    } else if (index == 1){
+        fragA = texture2DRect(map1, texCoordVarying);
+        fragB = texture2DRect(map2, texCoordVarying);
+    } else if (index == 2){
+        fragA = texture2DRect(map2, texCoordVarying);
+        fragB = texture2DRect(map3, texCoordVarying);
+    } else if (index == 3){
+        fragA = texture2DRect(map3, texCoordVarying);
+        fragB = texture2DRect(map4, texCoordVarying);
+    } else if (index == 4){
+        fragA = texture2DRect(map4, texCoordVarying);
+        fragB = texture2DRect(map5, texCoordVarying);
+    } else if (index == 5){
+        fragA = texture2DRect(map5, texCoordVarying);
+        fragB = texture2DRect(map6, texCoordVarying);
+    } else if (index == 6){
+        fragA = texture2DRect(map6, texCoordVarying);
+        fragB = texture2DRect(map7, texCoordVarying);
+    } else if (index == 7){
+        fragA = texture2DRect(map7, texCoordVarying);
+        fragB = texture2DRect(map8, texCoordVarying);
+    } else if (index == 8){
+        fragA = texture2DRect(map8, texCoordVarying);
+        fragB = texture2DRect(map9, texCoordVarying);
+    } else if (index == 9){
+        fragA = texture2DRect(map9, texCoordVarying);
+        fragB = texture2DRect(map10, texCoordVarying);
+    } else if (index == 10){
+        fragA = texture2DRect(map10, texCoordVarying);
+        fragB = texture2DRect(map11, texCoordVarying);
+    } else if (index == 11){
+        fragA = texture2DRect(map11, texCoordVarying);
+        fragB = texture2DRect(map12, texCoordVarying);
+    } else if (index == 12){
+        fragA = texture2DRect(map12, texCoordVarying);
+        fragB = texture2DRect(map13, texCoordVarying);
+    } else if (index == 13){
+        fragA = texture2DRect(map13, texCoordVarying);
+        fragB = texture2DRect(map14, texCoordVarying);
+    } else if (index == 14){
+        fragA = texture2DRect(map14, texCoordVarying);
+        fragB = texture2DRect(map15, texCoordVarying);
+    } else {
+        fragA = texture2DRect(map15, texCoordVarying);
+        fragB = texture2DRect(map0, texCoordVarying);
+    }
 
-	//float c = fract(float(u_currframe) / 15.);
-    gl_FragColor = frag;
-	//pmain();
+    //float c = fract(float(u_currframe) / 15.);
+    gl_FragColor = mix(fragA, fragB, fract(val));
+    //pmain();
 }
